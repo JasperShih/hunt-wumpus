@@ -1,7 +1,31 @@
+# -*- coding: utf8 -*-
 __author__ = 'Jasper'
 
-
 class Game:
+    def __init__(self, game_map, player, wumpus):
+        self.game_map =game_map
+        self.player =player
+        self.wumpus = wumpus
+
+        self.locate(self.player)
+        self.locate(self.wumpus)
+
+    def locate(self, creature):
+        if self.game_map.is_valid_location(creature.initial_location):
+            creature.location = creature.initial_location
+        else:
+            print "Invalid initial location!"
+            creature.location = (0,0)
+
+    def is_defeat(self):
+        if self.player.get_location() == self.wumpus.get_location():
+            return True
+        else:
+            return False
+
+
+
+class Map:
     def __init__(self, map_bound):
         self.map_bound = map_bound
 
@@ -13,13 +37,10 @@ class Game:
 
 
 class Creature:
-    def __init__(self, game, initial_location):
-        self.game = game
-        if self.game.is_valid_location(initial_location):
-            self.location = initial_location
-        else:
-            print "Invalid initial location!"
-            self.location = (0, 0)
+
+    def __init__(self, initial_location):
+        self.initial_location = initial_location
+        self.location = None
 
     def move(self, direction):
         if direction == "up":
@@ -49,3 +70,6 @@ class Creature:
 
 if __name__ == '__main__':
     pass
+
+
+# 要從Game, map, creature開始寫
