@@ -37,7 +37,6 @@ class Map:
 
 
 class Creature:
-
     def __init__(self, initial_location):
         self.initial_location = initial_location
         self.location = None
@@ -66,6 +65,24 @@ class Creature:
 
     def get_location(self):
         return self.location
+
+class Player(Creature):
+    def attack(self, direction):
+        if direction == "up":
+            self.kill_wumpus((0, -1))
+        elif direction == "down":
+            self.update_location((0, 1))
+        elif direction == "left":
+            self.update_location((-1, 0))
+        elif direction == "right":
+            self.update_location((1, 0))
+        else:
+            print "Invalid direction input!"
+            # arise exception
+
+    def kill_wumpus(self, offest):
+        player_location = self.get_location()
+        if (player_location[0]+offest[0], player_location[1]+offest[1])
 
 
 if __name__ == '__main__':

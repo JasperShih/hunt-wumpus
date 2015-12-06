@@ -44,7 +44,17 @@ class HuntWumpusTest(unittest.TestCase):
         self.assertEqual(game.is_defeat(), True)
 
     def test_win(self):
-        pass
+        game_map = Map((5, 5))
+        # initial_location
+        player = Creature((3, 2))
+        wumpus = Creature((3, 3))
+        game = Game(game_map, player, wumpus)
+
+        game.player.attack("right")
+        # game.wumpus = None
+
+        self.assertEqual(game.is_win(), True)
+
 
 
 if __name__ == '__main__':
@@ -52,6 +62,9 @@ if __name__ == '__main__':
 
 """
 心得:
+Instructive programming
 要從defeat/win->map->move的順序由小到大開始寫 (Top->Down)
 才不會一直架構要重改
+
+win 和move 還沒寫
 """
