@@ -14,7 +14,7 @@ class HuntWumpusTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_map(self):
+    def sketch_map(self):
         # In this case, map size is (0~9) * (0-9)
         map_bound = (10, 10)
         game_map = Map(map_bound)
@@ -22,7 +22,7 @@ class HuntWumpusTest(unittest.TestCase):
         self.assertEqual(game_map.is_valid_location((10, 4)), False)
 
     # unfinished
-    def test_move(self):
+    def sketch_move(self):
         game_map = Map((5, 5))
         # initial_location
         player = Creature((3, 2))
@@ -34,7 +34,7 @@ class HuntWumpusTest(unittest.TestCase):
         self.assertEqual(game.player.get_location(), (3, 1))
         self.assertEqual(game.wumpus.get_location(), (1, 0))
 
-    def test_defeat(self):
+    def sketch_defeat(self):
         game_map = Map((5, 5))
         # initial_location
         player = Creature((3, 3))
@@ -43,17 +43,31 @@ class HuntWumpusTest(unittest.TestCase):
 
         self.assertEqual(game.is_defeat(), True)
 
-    def test_win(self):
-        game_map = Map((5, 5))
-        # initial_location
-        player = Creature((3, 2))
-        wumpus = Creature((3, 3))
+    def sketch_win(self):
+        map_size = (5, 5)
+        game_map = Map(map_size)
+        player_initial_location = (3, 2)
+        player = Creature(player_initial_location)
+        wumpus_initial_location = (3, 3)
+        wumpus = Creature(wumpus_initial_location)
         game = Game(game_map, player, wumpus)
 
-        game.player.attack("right")
+        game.attack_judgment(player, "up", wumpus)
         # game.wumpus = None
 
         self.assertEqual(game.is_win(), True)
+
+    def sketch_turn(self):
+        map_size = (5, 5)
+        game_map = Map(map_size)
+        player_initial_location = (3, 2)
+        player = Creature(player_initial_location)
+        wumpus = None
+        game = Game(game_map, player, wumpus)
+
+        self.assertEqual(game.run(), "win")
+
+
 
 
 
