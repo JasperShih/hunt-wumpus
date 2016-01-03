@@ -1,5 +1,9 @@
 # -*- coding: utf8 -*-
+import os
 from abc import ABCMeta, abstractmethod
+from wumpus_Game import *
+from wumpus_Creature import *
+from wumpus_Arena import *
 
 
 class Flow:
@@ -23,9 +27,29 @@ class Flow:
     @abstractmethod
     def turn_flow(self):
         """
-        active_role = get_active_role()
-        active_role.act()
+        role_act_flow()
         self.game.turns += 1
+        """
+
+    @abstractmethod
+    def role_act_flow(self):
+        """
+        (player_act_flow() if (self.game.turns % 2 == 0) else
+         wumpus_act_flow())
+         """
+
+    @abstractmethod
+    def player_act_flow(self):
+        """
+        player.get_action()
+        (self.game.attack(player, wumpus) if (player.is_attack_action()) else
+         self.game.player_move())
+        """
+
+    @abstractmethod
+    def wumpus_act_flow(self):
+        """
+        self.game.wumpus_move()
         """
 
 
@@ -36,11 +60,9 @@ class ProcedureFlow(Flow):
         self.display_score()
 
     def is_game_over(self):
-        if None in (self.game.wumpus, self.game.player):
-            result = True
-        else:
-            result = False
-        return result
+        return (True if (self.game.wumpus is None or
+                         self.game.player is None)else
+                False)
 
     def display_score(self):
         print "Player:   " + str(self.game.player)
@@ -50,55 +72,48 @@ class ProcedureFlow(Flow):
 
 class TurnFlow(Flow):
     def turn_flow(self):
-        active_role = self.get_active_role()
-        active_role.act()
+        self.role_act_flow()
         self.game.turns += 1
 
-    def get_active_role(self):
-        if self.game.turns % 2 is 0:
-            active_role = self.game.player
-        else:
-            active_role = self.game.wumpus
-        return active_role
+
+class RoleActFlow(Flow):
+    def role_act_flow(self):
+        (self.player_act_flow() if (self.game.turns % 2 == 0) else
+         self.wumpus_act_flow())
 
 
-class ImplementedFlow(ProcedureFlow, TurnFlow):
+class PlayerActFlow(Flow):
+    def player_act_flow(self):
+        self.game.player.get_action()
+        (self.game.attack(self.game.player, self.game.wumpus) if
+                         (self.game.player.is_attack_action()) else
+         self.game.move(self.game.player))
+
+
+class WumpusActFlow(Flow):
+    def wumpus_act_flow(self):
+        self.game.move(self.game.wumpus)
+        #os.system("cls")
+        for i in self.game.arena.array:
+                print i
+
+
+class ImplementedFlow(ProcedureFlow, TurnFlow, RoleActFlow,
+                      PlayerActFlow, WumpusActFlow):
     pass
-
-
-class Game:
-    def __init__(self, map, player, wumpus):
-        self.map = None
-        self.player = player
-        self.wumpus = wumpus
-
-        self.turns = 0
-
-
-class Creature:
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def act(self):
-        pass
-
-
-class Wumpus(Creature):
-    def act(self):
-        pass
-
-
-class Player(Creature):
-    def act(self):
-        pass
 
 
 def main():
     player = Player()
     wumpus = Wumpus()
-    game = Game(None, wumpus, player)
+    x_limit = 5
+    y_limit = 5
+    arena = Arena(x_limit, y_limit)
+    game = Game(arena, player, wumpus)
+
     flow = ImplementedFlow(game)
     flow.procedure_flow()
+
 
 if __name__ == '__main__':
     main()
